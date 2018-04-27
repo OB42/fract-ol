@@ -38,8 +38,8 @@ void	bresenham(t_v *a, t_v *b, t_fdf *fdf)
 
 void	draw_line(t_v a, t_v b, t_fdf *fdf)
 {
-	a = rot((t_v){a.x * fdf->zoom, a.y * fdf->zoom, a.z * fdf->zoom}, fdf->ang);
-	b = rot((t_v){b.x * fdf->zoom, b.y * fdf->zoom, b.z * fdf->zoom}, fdf->ang);
+	a = rot((t_v){a.x * fdf->zoom, a.y * fdf->zoom, a.z * fdf->zoom * 0.5}, fdf->ang);
+	b = rot((t_v){b.x * fdf->zoom, b.y * fdf->zoom, b.z * fdf->zoom * 0.5}, fdf->ang);
 	if (fabs(a.x - b.x) > fabs(a.y - b.y))
 		return ((a.x < b.x ? bresenham(&a, &b, fdf)
 		: bresenham(&b, &a, fdf)));

@@ -84,12 +84,12 @@ int		input(int key, t_fdf *fdf)
 		fdf->ang.z += ANGLE_INCREMENT * M_PI / 180;
 	else if (k6 == key)
 		fdf->ang.z -= ANGLE_INCREMENT * M_PI / 180;
-	else
-	{
+	else if (plus == key || minus == key)
 		fdf->zoom += ((plus == key) - (minus == key)) * 1.1;
+	else if (left == key || right == key)
 		fdf->pos.x += ((right == key) - (left == key)) * POS_INCREMENT;
+	else if (down == key || up == key)
 		fdf->pos.y += ((down == key) - (up == key)) * POS_INCREMENT;
-	}
 	print_map(fdf);
 	return (0);
 }
