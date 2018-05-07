@@ -33,6 +33,11 @@ int		input(int key, t_fractol *fractol)
 		fractol->zoom = 0.2325;
 		update_image(fractol);
 	}
+	else if (minus == key || plus == key)
+	{
+		fractol->max_iter += ((plus == key) - (minus == key)) * 5;
+		update_image(fractol);
+	}
 	return (0);
 }
 
@@ -74,7 +79,7 @@ void	init_fractol(t_fractol *fractol)
 	fractol->line_size = SIZE * 4;
 	fractol->endian = 0;
 	fractol->bits_per_pixel = 32;
-	fractol->max_iterations = DEFAULT_ITERATIONS;
+	fractol->max_iter = DEFAULT_ITERATIONS;
 	fractol->zoom = 4;
 	fractol->pos.y = 1;
 	fractol->pos.x = 1;

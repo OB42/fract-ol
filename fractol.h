@@ -75,7 +75,7 @@ typedef struct		s_fractol
 	int				line_size;
 	int				endian;
 	int				bits_per_pixel;
-	int				max_iterations;
+	int				max_iter;
 	int				fract_id;
 	float			zoom;
 }					t_fractol;
