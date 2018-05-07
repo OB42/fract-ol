@@ -18,18 +18,17 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
-# define ERR_USAGE				"Usage: ./fractol [fractal id]\n"
-# define ERR_FILE_READING 		"Can't read source file\n"
+# define ERR_USAGE				"Usage: ./fractol [fractal_id: 0-2]\n"
 # define ERR_MALLOC				"malloc error\n"
-# define ERR_PARSING			"Parsing error\n"
-# define ERR_GNL				"GNL error\n"
+# define ERR_NBR_PARSING	"Invalid character after a number\n"
 # define POS_INCREMENT 0.25
 # define SIZE 1024
 # define DEFAULT_ITERATIONS 100
 # define MANDELBROT 0
 # define JULIA 1
 # define BURNING_SHIP 2
-# define SPEED 0.25
+# define NB_FRACTAL 3
+# define SPEED 0.1
 # define MIN_JULIA_DIFF 21.0f / SIZE
 
 typedef struct		s_p
@@ -58,6 +57,8 @@ enum	e_keys {
 	esc = 0x35
 };
 
+# define SHIP_SHORTCUT k1
+
 enum	e_mouse {
 	scroll_down = 0x4,
 	scroll_up = 0x5
@@ -65,7 +66,6 @@ enum	e_mouse {
 
 typedef struct		s_fractol
 {
-	t_p				dim;
 	t_p				pos;
 	t_p				julia;
 	void			*win;
@@ -76,7 +76,7 @@ typedef struct		s_fractol
 	int				endian;
 	int				bits_per_pixel;
 	int				max_iterations;
-	int				fractal_id;
+	int				fract_id;
 	float			zoom;
 }					t_fractol;
 
@@ -85,4 +85,5 @@ void				pr_free(void *p);
 void				print_error(char *err);
 void				draw_fractal(t_fractol *fractol);
 int					update_image(t_fractol *fractol);
+int					pr_atoi(const char *str);
 #endif

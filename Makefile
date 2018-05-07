@@ -15,7 +15,7 @@
 CC = cc -O3
 NAME = fractol
 LFT_PATH = ./ft_printf/
-SRC_NAME = fractol.c		pr_malloc.c	print_error.c draw_fractal.c
+SRC_NAME = fractol.c		pr_malloc.c	print_error.c draw_fractal.c pr_atoi.c
 OBJ = $(SRC_NAME:.c=.o)
 
 all: $(NAME)

@@ -43,25 +43,28 @@ int		get_iteration_color(int iterations)
 	return (colors[iterations % 16]);
 }
 
-int		ft_iterate(t_p p, t_p *c, t_fractol *fractol)
+int		ft_iterate(t_p *p, t_p *c, t_fractol *fractol)
 {
 	static int		n;
 	static double	xx;
 	static double	yy;
+	static t_p		t;
 
 	n = 0;
-	while (n < fractol->max_iterations && (xx = p.x * p.x)
-	+ (yy = p.y * p.y) < 4.0)
+	t.x = p->x;
+	t.y = p->y;
+	while (n < fractol->max_iterations && (xx = t.x * t.x)
+	+ (yy = t.y * t.y) < 4.0)
 	{
-		if (fractol->fractal_id == BURNING_SHIP)
+		if (fractol->fract_id == BURNING_SHIP)
 		{
-			p.y = fabs(2.0 * p.x * p.y) + c->y;
-			p.x = fabs(xx - yy + c->x);
+			t.y = fabs(2.0 * t.x * t.y) + c->y;
+			t.x = fabs(xx - yy + c->x);
 		}
 		else
 		{
-			p.y = 2.0 * p.x * p.y + c->y;
-			p.x = xx - yy + c->x;
+			t.y = 2.0 * t.x * t.y + c->y;
+			t.x = xx - yy + c->x;
 		}
 		n++;
 	}
@@ -76,23 +79,21 @@ void	draw_fractal(t_fractol *fractol)
 	double	scale;
 	double	x;
 
-//	ft_memset(fractol->img_addr, 0, fractol->line_size * SIZE);
 	x = -fractol->zoom / 2;
 	pos.y = x * fractol->pos.y;
+	x *= fractol->pos.x;
 	pixel.y = -1;
 	scale = fractol->zoom / SIZE;
 	while (++pixel.y < SIZE)
 	{
-		pos.x = x * fractol->pos.x;
+		pos.x = x;
 		pixel.x = -1;
 		while (++pixel.x < SIZE)
 		{
-			iterations = ft_iterate(pos,
-				fractol->fractal_id == JULIA ? &(fractol->julia) : &pos, fractol);
+			iterations = ft_iterate(&pos,
+				fractol->fract_id == JULIA ? &(fractol->julia) : &pos, fractol);
 			if (iterations != fractol->max_iterations)
 				set_pixel(&pixel, get_iteration_color(iterations), fractol);
-			else
-				set_pixel(&pixel, 0, fractol);
 			pos.x += scale;
 		}
 		pos.y += scale;
@@ -101,6 +102,7 @@ void	draw_fractal(t_fractol *fractol)
 
 int		update_image(t_fractol *fractol)
 {
+	ft_memset(fractol->img_addr, 0, fractol->line_size * SIZE);
 	draw_fractal(fractol);
 	mlx_put_image_to_window(fractol->mlx, fractol->win, fractol->img, 0, 0);
 	return (0);

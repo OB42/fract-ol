@@ -15,12 +15,22 @@
 int		input(int key, t_fractol *fractol)
 {
 	if (esc == key)
-		printf("");
+	{
+		mlx_destroy_window(fractol->mlx, fractol->win);
+		mlx_destroy_image(fractol->mlx, fractol->img);
+		exit(0);
+	}
 	else if (left == key || right == key || down == key || up == key)
 	{
 		fractol->pos.x += ((left == key) - (right == key)) * POS_INCREMENT;
 		fractol->pos.y += ((up == key) - (down == key)) * POS_INCREMENT;
-		printf("%f %f\n", fractol->pos.x, fractol->pos.y);
+		update_image(fractol);
+	}
+	else if (fractol->fract_id == BURNING_SHIP && SHIP_SHORTCUT == key)
+	{
+		fractol->pos.x = 15.5;
+		fractol->pos.y = 1;
+		fractol->zoom = 0.2325;
 		update_image(fractol);
 	}
 	return (0);
@@ -31,7 +41,7 @@ int		mouse_move(int x, int y, t_fractol *fractol)
 	double	tempx;
 	double	tempy;
 
-	if (fractol->fractal_id == JULIA)
+	if (fractol->fract_id == JULIA)
 	{
 		tempx = (double)x / SIZE * 4 - 2;
 		tempy = (double)y / SIZE * 4 - 2;
@@ -58,7 +68,6 @@ int		mouse_scroll(int button, int x, int y, t_fractol *fractol)
 
 void	init_fractol(t_fractol *fractol)
 {
-	ft_bzero(fractol, sizeof(t_fractol));
 	fractol->mlx = mlx_init();
 	fractol->win = mlx_new_window(fractol->mlx, SIZE, SIZE, "42");
 	fractol->img = mlx_new_image(fractol->mlx, SIZE, SIZE);
@@ -73,13 +82,18 @@ void	init_fractol(t_fractol *fractol)
 		&(fractol->bits_per_pixel), &(fractol->line_size), &(fractol->endian));
 	fractol->julia.x = 0.285;
 	fractol->julia.y = 0.01;
-	fractol->fractal_id = BURNING_SHIP;
 }
 
 int		main(int argc, char *argv[])
 {
 	t_fractol	fractol;
 
+	ft_bzero(&fractol, sizeof(t_fractol));
+	if (argc != 2)
+		print_error(ERR_USAGE);
+	else if ((fractol.fract_id = pr_atoi(argv[1])) < 0
+	|| fractol.fract_id >= NB_FRACTAL)
+		print_error(ERR_USAGE);
 	init_fractol(&fractol);
 	mlx_expose_hook(fractol.win, update_image, &fractol);
 	mlx_mouse_hook(fractol.win, mouse_scroll, &fractol);
