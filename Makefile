@@ -10,12 +10,12 @@
 #                                                                              #
 # **************************************************************************** #
 
-.PHONY: all, fdf, clean, fclean, re, opti
+.PHONY: all, fractol, clean, fclean, re, opti
 
 CC = cc -O3
-NAME = fdf
+NAME = fractol
 LFT_PATH = ./ft_printf/
-SRC_NAME = fdf.c nbr_parsing.c print_error.c get_next_line/get_next_line.c pr_malloc.c split.c get_map.c draw_line.c
+SRC_NAME = fractol.c		pr_malloc.c	print_error.c draw_fractal.c
 OBJ = $(SRC_NAME:.c=.o)
 
 all: $(NAME)

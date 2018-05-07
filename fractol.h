@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.h                                              :+:      :+:    :+:   */
+/*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: obenazzo <obenazzo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,26 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FDF_H
-# define FDF_H
+#ifndef FRACTOL_H
+# define FRACTOL_H
 # include "math.h"
 # include "ft_printf/ft_printf.h"
-# include "get_next_line/get_next_line.h"
 # include "mlx.h"
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
-# define ERR_NBR_PARSING		"Invalid character after a number\n"
-# define ERR_USAGE				"Usage: ./fdf <map.fdf>\n"
+# define ERR_USAGE				"Usage: ./fractol [fractal id]\n"
 # define ERR_FILE_READING 		"Can't read source file\n"
 # define ERR_MALLOC				"malloc error\n"
 # define ERR_PARSING			"Parsing error\n"
 # define ERR_GNL				"GNL error\n"
-# define ANGLE_INCREMENT 10
 # define POS_INCREMENT 25
-# define WIDTH 1024
-# define HEIGHT 1024
-
+# define SIZE 1024
+# define DEFAULT_ITERATIONS 100
+# define MANDELBROT 0
+# define JULIA 1
+# define BURNING_SHIP 2
+# define ZOOM_SPEED 0.1
+# define MIN_JULIA_DIFF 10 / SIZE
 typedef struct		s_p
 {
 	double			x;
@@ -54,36 +55,32 @@ enum	e_keys {
 	left = 0x7B,
 	right = 0x7C,
 	esc = 0x35
-
 };
-typedef struct		s_v
-{
-	double			x;
-	double			y;
-	double			z;
-}					t_v;
 
-typedef struct		s_fdf
+enum	e_mouse {
+	scroll_down = 0x4,
+	scroll_up = 0x5
+};
+
+typedef struct		s_fractol
 {
-	t_v				**map;
 	t_p				dim;
-	t_v				ang;
-	double			zoom;
 	t_p				pos;
+	t_p				julia;
 	void			*win;
 	void			*mlx;
 	void			*img;
-}					t_fdf;
+	char			*img_addr;
+	int				line_size;
+	int				endian;
+	int				bits_per_pixel;
+	int				max_iterations;
+	int				fractal_id;
+	float			zoom;
+}					t_fractol;
 
-void				draw_line(t_v a, t_v b, t_fdf *fdf);
-t_v					rot(t_v v, t_v a);
-t_p					get_map(char *file, int fd, t_v ***map);
 void				*pr_malloc(size_t n);
 void				pr_free(void *p);
 void				print_error(char *err);
-char				**while_char(char *str, char **words, int save, int w);
-char				**w_char(char *str, char **words, int save, int w);
-char				**split(char *str);
-int					pr_atoi(const char *str);
-void				check_nbr_parsing(char c);
+void				draw_fractal(t_fractol *fractol);
 #endif
