@@ -1,4 +1,12 @@
-# FDF
-A simple wireframing program
+# Fract'ol
 
-![alt text](https://raw.githubusercontent.com/OB42/FDF/master/Screen%20Shot%202018-04-27%20at%2010.07.05%20AM.png)
+
+Burning_ship
+![](https://raw.githubusercontent.com/OB42/fract-ol/master/burning_ship.png)
+
+Julia set
+
+![](https://raw.githubusercontent.com/OB42/fract-ol/master/julia.png)
+
+Mandelbrot
+![](https://raw.githubusercontent.com/OB42/fract-ol/master/mandelbrot.png)
