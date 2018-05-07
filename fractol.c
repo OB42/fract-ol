@@ -12,10 +12,17 @@
 
 #include "fractol.h"
 
-int		update_image(t_fractol *fractol)
+int		input(int key, t_fractol *fractol)
 {
-	draw_fractal(fractol);
-	mlx_put_image_to_window(fractol->mlx, fractol->win, fractol->img, 0, 0);
+	if (esc == key)
+		printf("");
+	else if (left == key || right == key || down == key || up == key)
+	{
+		fractol->pos.x += ((left == key) - (right == key)) * POS_INCREMENT;
+		fractol->pos.y += ((up == key) - (down == key)) * POS_INCREMENT;
+		printf("%f %f\n", fractol->pos.x, fractol->pos.y);
+		update_image(fractol);
+	}
 	return (0);
 }
 
@@ -38,14 +45,14 @@ int		mouse_move(int x, int y, t_fractol *fractol)
 	}
 	return (0);
 }
+
 int		mouse_scroll(int button, int x, int y, t_fractol *fractol)
 {
 	if (button == scroll_down)
-		fractol->zoom *= (1 - ZOOM_SPEED);
+		fractol->zoom *= (1 - SPEED);
 	else if (button == scroll_up)
-		fractol->zoom *= (1 + ZOOM_SPEED);
+		fractol->zoom *= (1 + SPEED);
 	update_image(fractol);
-
 	return (0);
 }
 
@@ -59,12 +66,14 @@ void	init_fractol(t_fractol *fractol)
 	fractol->endian = 0;
 	fractol->bits_per_pixel = 32;
 	fractol->max_iterations = DEFAULT_ITERATIONS;
-	fractol->zoom = 0.2;
+	fractol->zoom = 4;
+	fractol->pos.y = 1;
+	fractol->pos.x = 1;
 	fractol->img_addr = mlx_get_data_addr(fractol->img,
 		&(fractol->bits_per_pixel), &(fractol->line_size), &(fractol->endian));
 	fractol->julia.x = 0.285;
 	fractol->julia.y = 0.01;
-	fractol->fractal_id = JULIA;
+	fractol->fractal_id = BURNING_SHIP;
 }
 
 int		main(int argc, char *argv[])
@@ -74,7 +83,8 @@ int		main(int argc, char *argv[])
 	init_fractol(&fractol);
 	mlx_expose_hook(fractol.win, update_image, &fractol);
 	mlx_mouse_hook(fractol.win, mouse_scroll, &fractol);
-	mlx_hook(fractol.win, 6, 1L<<6, mouse_move, &fractol);
+	mlx_hook(fractol.win, 6, 1L << 6, mouse_move, &fractol);
+	mlx_key_hook(fractol.win, input, &fractol);
 	mlx_loop(fractol.mlx);
 	return (0);
 }

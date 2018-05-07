@@ -14,7 +14,7 @@
 
 void	set_pixel(t_p *p, int color, t_fractol *fractol)
 {
-	if (p->x < SIZE && p->y < SIZE && p->y >= 0 && p->x >=0)
+	if (p->x < SIZE && p->y < SIZE && p->y >= 0 && p->x >= 0)
 		*(int *)(fractol->img_addr + ((int)(p->y * SIZE + p->x) * 4)) =
 		mlx_get_color_value(fractol->mlx, color);
 }
@@ -43,7 +43,7 @@ int		get_iteration_color(int iterations)
 	return (colors[iterations % 16]);
 }
 
-int		ft_iterate(t_p p, t_p c, t_fractol *fractol)
+int		ft_iterate(t_p p, t_p *c, t_fractol *fractol)
 {
 	static int		n;
 	static double	xx;
@@ -53,8 +53,16 @@ int		ft_iterate(t_p p, t_p c, t_fractol *fractol)
 	while (n < fractol->max_iterations && (xx = p.x * p.x)
 	+ (yy = p.y * p.y) < 4.0)
 	{
-		p.y = 2.0 * p.x * p.y + c.y;
-		p.x = xx - yy + c.x;
+		if (fractol->fractal_id == BURNING_SHIP)
+		{
+			p.y = fabs(2.0 * p.x * p.y) + c->y;
+			p.x = fabs(xx - yy + c->x);
+		}
+		else
+		{
+			p.y = 2.0 * p.x * p.y + c->y;
+			p.x = xx - yy + c->x;
+		}
 		n++;
 	}
 	return (n);
@@ -66,26 +74,34 @@ void	draw_fractal(t_fractol *fractol)
 	t_p		pixel;
 	int		iterations;
 	double	scale;
-	double	save;
+	double	x;
 
-	ft_memset(fractol->img_addr, 0, fractol->line_size * SIZE);
-	pos.x = -fractol->zoom/2;
-	pos.y = pos.x;
-	save = pos.x;
+//	ft_memset(fractol->img_addr, 0, fractol->line_size * SIZE);
+	x = -fractol->zoom / 2;
+	pos.y = x * fractol->pos.y;
 	pixel.y = -1;
 	scale = fractol->zoom / SIZE;
 	while (++pixel.y < SIZE)
 	{
-		pos.x = save;
+		pos.x = x * fractol->pos.x;
 		pixel.x = -1;
 		while (++pixel.x < SIZE)
 		{
 			iterations = ft_iterate(pos,
-				fractol->fractal_id == JULIA ? fractol->julia : pos, fractol);
+				fractol->fractal_id == JULIA ? &(fractol->julia) : &pos, fractol);
 			if (iterations != fractol->max_iterations)
 				set_pixel(&pixel, get_iteration_color(iterations), fractol);
+			else
+				set_pixel(&pixel, 0, fractol);
 			pos.x += scale;
 		}
 		pos.y += scale;
 	}
+}
+
+int		update_image(t_fractol *fractol)
+{
+	draw_fractal(fractol);
+	mlx_put_image_to_window(fractol->mlx, fractol->win, fractol->img, 0, 0);
+	return (0);
 }

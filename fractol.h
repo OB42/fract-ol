@@ -23,14 +23,15 @@
 # define ERR_MALLOC				"malloc error\n"
 # define ERR_PARSING			"Parsing error\n"
 # define ERR_GNL				"GNL error\n"
-# define POS_INCREMENT 25
+# define POS_INCREMENT 0.25
 # define SIZE 1024
 # define DEFAULT_ITERATIONS 100
 # define MANDELBROT 0
 # define JULIA 1
 # define BURNING_SHIP 2
-# define ZOOM_SPEED 0.1
-# define MIN_JULIA_DIFF 10 / SIZE
+# define SPEED 0.25
+# define MIN_JULIA_DIFF 21.0f / SIZE
+
 typedef struct		s_p
 {
 	double			x;
@@ -83,4 +84,5 @@ void				*pr_malloc(size_t n);
 void				pr_free(void *p);
 void				print_error(char *err);
 void				draw_fractal(t_fractol *fractol);
+int					update_image(t_fractol *fractol);
 #endif
